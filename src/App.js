@@ -1,26 +1,65 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Suspense, lazy, useRef, useState} from 'react'
+const Comments = lazy(()=>import("./Comments"))
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  const titleRef = useRef()
+  const fullNameRef = useRef()
+  const contentRef = useRef()
+  const submitRef = useRef();
+
+  const [title,setTitle] = useState('');
+  const [fullName,setFullName] = useState('');
+  const [content,setContent] = useState('');
+  const [comments, setComments] = useState([])
+
+  // useEffect(()=>{
+  //   titleRef.current.focus();
+  // },[])
+
+  const onFirstNameChange=(e,field)=>{
+    if(e.keyCode === 13){
+      switch(field){
+      case 'fullName':
+      titleRef.current.focus();
+      break;
+      case 'title':
+      contentRef.current.focus();
+      break;
+      case 'content':
+      submitRef.current.focus();
+      break;
+      
+      }
+    }
+  }
+
+  const arr = [];
+
+  const handleClick =() =>{
+    setComments(list=> { 
+      return [{title :title,fullName:fullName,content:content},...list]
+    })
+    setFullName('')
+    setTitle('')
+    setContent('');
+  }
+   return (
+     <>
+     <h1>Welcome to my blog</h1>
+     <h3>Lets talk about life</h3>
+     <p>edmwedmkwendmewjndjw cenckjn cneoicnew woiew ecmweod ewdmewod ewdnkn</p>
+    <div>
+      <input onKeyUp={(e) => onFirstNameChange(e,'fullName')} ref={fullNameRef} onChange={(e)=>setFullName(e.target.value)} placeholder='full name' />
+      <input onKeyUp={(e) => onFirstNameChange(e,'title')} ref={titleRef} onChange={(e)=>setTitle(e.target.value)} placeholder='title' />
+      <textarea onKeyUp={(e) => onFirstNameChange(e,'content')} ref={contentRef} onChange={(e)=>setContent(e.target.value)} placeholder='Write your comment here' />
+      <button onClick={handleClick} ref={submitRef}>Submit</button>
     </div>
-  );
+    <Suspense fallback={<h1>loading...</h1>}>
+        <Comments comments={comments}/>
+        </Suspense>
+      
+    </>
+  )
 }
 
-export default App;
+export default App
